@@ -1,11 +1,12 @@
 package main
 
 import (
+	"database/sql"
+	"github.com/RY-2718/catsFoodRecorder/handler"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"github.com/RY-2718/catsFoodRecorder/handler"
 	_ "github.com/mattn/go-sqlite3"
-	"database/sql"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -17,10 +18,12 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	e.GET("/", handler.MainPage())
+	log.SetLevel(log.InfoLevel)
+
+	e.File("/", "./frontend/index.html")
 	e.GET("/foods", handler.GetFoods(db))
-	e.PUT("/foods", handler.CreateFood(db))
-	e.DELETE("/tasks/:id", handler.DeleteFood(db))
+	e.POST("/foods", handler.CreateFood(db))
+	e.DELETE("/foods/:id", handler.DeleteFood(db))
 
 	e.Start(":8888")
 }
@@ -43,7 +46,7 @@ func initDB(filepath string) *sql.DB {
 
 func migrate(db *sql.DB) {
 	sql := `
-	CREATE TABLE IF NOT EXISTS foods(
+		CREATE TABLE IF NOT EXISTS foods(
 		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		name VARCHAR NOT NULL,
 		created_at TIMESTAMP DEFAULT (DATETIME('now','localtime'))

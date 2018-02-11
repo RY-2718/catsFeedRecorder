@@ -25,16 +25,10 @@ func GetFoods(db *sql.DB) echo.HandlerFunc {
 
 func CreateFood(db *sql.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		food := data.Food{}
-		c.Bind(food)
-		id, err := model.CreateFood(db, food.Name)
-		if err != nil {
-			return err
-		}
-		response := H{
-			"created": id,
-		}
-		return c.JSON(http.StatusCreated, response)
+		food := new(data.InnerFood)
+		c.Bind(&food)
+		result := model.CreateFood(db, food.Name)
+		return c.JSON(http.StatusCreated, result)
 	}
 }
 
@@ -46,7 +40,7 @@ func DeleteFood(db *sql.DB) echo.HandlerFunc {
 			return err
 		}
 		response := H{
-			"deleted": id,
+			"id": id,
 		}
 		return c.JSON(http.StatusOK, response)
 	}

@@ -1,8 +1,17 @@
 package data
 
+import "time"
+
 type (
-	Food struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
+	InnerFood struct {
+		ID        int
+		Name      string
+		CreatedAt time.Time
+	}
+
+	OuterFood struct {
+		ID        int    `json:"id"`
+		Name      string `json:"name"`
+		CreatedAt string `json:"created_at"`
 	}
 )

@@ -70,3 +70,6 @@ fabric.properties
 
 # dep dependencies
 vendor/
+
+# database
+*.db
