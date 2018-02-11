@@ -7,9 +7,14 @@ import (
 	"github.com/labstack/echo/middleware"
 	_ "github.com/mattn/go-sqlite3"
 	log "github.com/sirupsen/logrus"
+	"os"
 )
 
 func main() {
+	if len(os.Args) != 2 {
+		log.Fatal("バインドするアドレスを指定してください")
+	}
+
 	db := initDB("./storage.db")
 	migrate(db)
 
@@ -18,14 +23,12 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	log.SetLevel(log.InfoLevel)
-
 	e.File("/", "./frontend/index.html")
 	e.GET("/foods", handler.GetFoods(db))
 	e.POST("/foods", handler.CreateFood(db))
 	e.DELETE("/foods/:id", handler.DeleteFood(db))
 
-	e.Start(":8888")
+	e.Start(os.Args[1])
 }
 
 func initDB(filepath string) *sql.DB {
