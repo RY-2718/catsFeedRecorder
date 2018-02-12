@@ -9,7 +9,7 @@ import (
 
 func GetFoods(db *sql.DB) []data.OuterFood {
 	query := "SELECT * FROM foods where strftime('%Y%m%d', created_at, 'localtime', '-3 hours') = ?"
-	date := time.Now().Add(3 * time.Hour).Format("20060102")
+	date := time.Now().Add(-3 * time.Hour).Format("20060102")
 	rows, err := db.Query(query, date)
 	if err != nil {
 		log.Fatal(err)
